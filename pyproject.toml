@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "pxrr"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Package for pseudo X-ray reflectivity and GIXOS data analysis"
 readme = "README.rst"
 authors = [{ name = "AUTHORS.rst" }]
@@ -24,11 +24,33 @@ dependencies = [
     "pandas",
     "pyyaml",
     "scipy",
+    "ruamel.yaml",
+    "h5py",
+    "orsopy",
+    "tiled",
+
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/nsls2/pxrr"
 "Bug Tracker" = "https://github.com/nsls2/pxrr/issues"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pxrr"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/pxrr",
+    "tests",
+    "docs",
+    "README.rst",
+    "AUTHORS.rst",
+    "CONTRIBUTING.rst",
+    "LICENSE",
+]
 
 [tool.black]
 line-length = 115
@@ -51,7 +73,7 @@ exclude = '''
 )/
 '''
 
-[tool.pixi.project]
+[tool.pixi.workspace]
 channels = ["conda-forge"]
 platforms = ["linux-64", "osx-arm64", "win-64"]
 
@@ -70,12 +92,18 @@ pxrr = { path = ".", editable = true }
 
 [tool.pixi.feature.dev.dependencies]
 pre-commit = "*"
+pytest = "*"
 python = "<3.13"
 
 [tool.pixi.feature.dev.tasks]
 lint = "pre-commit run --all-files"
+test = "pytest"
 
 [tool.pixi.dependencies]
 ipython = "*"
 ipykernel = ">=6.30.1,<7"
 pyfai = ">=2025.3.0,<2026"
+tiled = ">=0.1.0"
+"ruamel.yaml" = "*"
+h5py = "*"
+orsopy = "*"
